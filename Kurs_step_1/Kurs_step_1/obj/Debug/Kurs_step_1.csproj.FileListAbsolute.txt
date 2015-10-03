@@ -1,0 +1,17 @@
+C:\Users\Stas\Desktop\boroda\Kurs_step_1\Kurs_step_1\bin\Debug\Kurs_step_1.exe.config
+C:\Users\Stas\Desktop\boroda\Kurs_step_1\Kurs_step_1\bin\Debug\Kurs_step_1.exe
+C:\Users\Stas\Desktop\boroda\Kurs_step_1\Kurs_step_1\bin\Debug\Kurs_step_1.pdb
+C:\Users\Stas\Desktop\boroda\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.csprojResolveAssemblyReference.cache
+C:\Users\Stas\Desktop\boroda\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.Form1.resources
+C:\Users\Stas\Desktop\boroda\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.Properties.Resources.resources
+C:\Users\Stas\Desktop\boroda\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.csproj.GenerateResource.Cache
+C:\Users\Stas\Desktop\boroda\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.exe
+C:\Users\Stas\Desktop\boroda\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.pdb
+C:\Users\User\Desktop\Kurs_step_1\Kurs_step_1\bin\Debug\Kurs_step_1.exe.config
+C:\Users\User\Desktop\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.exe
+C:\Users\User\Desktop\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.pdb
+C:\Users\User\Desktop\Kurs_step_1\Kurs_step_1\bin\Debug\Kurs_step_1.exe
+C:\Users\User\Desktop\Kurs_step_1\Kurs_step_1\bin\Debug\Kurs_step_1.pdb
+C:\Users\User\Desktop\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.Form1.resources
+C:\Users\User\Desktop\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.Properties.Resources.resources
+C:\Users\User\Desktop\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.csproj.GenerateResource.Cache
