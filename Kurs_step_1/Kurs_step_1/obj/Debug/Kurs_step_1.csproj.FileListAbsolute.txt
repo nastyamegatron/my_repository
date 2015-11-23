@@ -15,3 +15,4 @@ C:\Users\User\Desktop\Kurs_step_1\Kurs_step_1\bin\Debug\Kurs_step_1.pdb
 C:\Users\User\Desktop\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.Form1.resources
 C:\Users\User\Desktop\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.Properties.Resources.resources
 C:\Users\User\Desktop\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.csproj.GenerateResource.Cache
+C:\Users\User\Desktop\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.csprojResolveAssemblyReference.cache

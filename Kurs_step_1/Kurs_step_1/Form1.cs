@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Timers;
 
 
 namespace Kurs_step_1
@@ -20,6 +21,8 @@ namespace Kurs_step_1
         {
             InitializeComponent();
         }
+        Thread myThread;
+        Thread test;
 
 
         [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
@@ -34,17 +37,46 @@ namespace Kurs_step_1
 
         private void button1_Click(object sender, EventArgs e)
         {
-            label2.Text = 0.ToString();
-            label4.Text = 0.ToString();
-            label6.Text = 0.ToString();
-            label8.Text = 0.ToString();
-            Thread myThread = new Thread(Schet);
-            myThread.Start();
-
+            test = new Thread(Test);
+            test.Start();
         }
-
+        public void Test()
+        {
+            for (int n = 0; n <= 2; n++)
+            {
+                try { myThread.Abort(); }
+                catch { };
+                label2.Invoke((ThreadStart)delegate()
+                {
+                    label2.Text = 0.ToString();
+                });
+                label4.Invoke((ThreadStart)delegate()
+                {
+                    label4.Text = 0.ToString();
+                });
+                label6.Invoke((ThreadStart)delegate()
+                {
+                    label6.Text = 0.ToString();
+                });
+                label8.Invoke((ThreadStart)delegate()
+                {
+                    label8.Text = 0.ToString();
+                });
+                
+                myThread = new Thread(Schet);
+                myThread.Start();
+                Thread.Sleep(5000);
+                
+            }
+            myThread.Abort();
+            test.Abort();
+            
+        }
         public void Schet()
         {
+
+            
+
             IntPtr DialogHandle = FindWindow("Chrome_WidgetWin_1", "Яндекс - Google Chrome");
             if (DialogHandle == IntPtr.Zero)
             {
@@ -56,7 +88,7 @@ namespace Kurs_step_1
                 IntPtr selectedWindow = GetForegroundWindow();
                 if (selectedWindow == DialogHandle)
                 {
-
+                  
                     if ((GetKeyState(Keys.Down) & 256) == 256 || (GetKeyState(Keys.Up) & 256) == 256)
                     {
                         label2.Invoke((ThreadStart)delegate()
@@ -105,11 +137,13 @@ namespace Kurs_step_1
                             label8.Text = (Int32.Parse(label8.Text) + 1).ToString();
                             Thread.Sleep(150);
                         });
+                    
 
+                    }
 
-                    }   
-                }
-            }
+                   
+                } 
+            } 
         }
     }
 }
