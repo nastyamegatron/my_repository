@@ -66,7 +66,26 @@ namespace Kurs_step_1
                 myThread = new Thread(Schet);
                 myThread.Start();
                 Thread.Sleep(10000);
-               
+                listBox1.Invoke((ThreadStart)delegate()
+                {
+                    listBox1.Items.Add("Количество нажатий на клавиши вверх вниз" + label2.Text);
+                });
+                listBox1.Invoke((ThreadStart)delegate()
+                {
+                    listBox1.Items.Add("Количество нажатий на клавиши букв цифр" + label4.Text);
+                });
+                listBox1.Invoke((ThreadStart)delegate()
+                {
+                    listBox1.Items.Add("Количество нажатий на мышь" + label6.Text);
+                });
+                listBox1.Invoke((ThreadStart)delegate()
+                {
+                    listBox1.Items.Add("Количество нажатий на скролл" + label8.Text);
+                });
+                listBox1.Invoke((ThreadStart)delegate()
+                {
+                    listBox1.Items.Add("");
+                });
                 
             }
             myThread.Abort();
@@ -95,7 +114,7 @@ namespace Kurs_step_1
                         label2.Invoke((ThreadStart)delegate()
                         {
                             label2.Text = (Int32.Parse(label2.Text) + 1).ToString();
-                            listBox1.Items.Add("Количество нажатий на клавиши вверх вниз" + label2.Text);
+                            //listBox1.Items.Add("Количество нажатий на клавиши вверх вниз" + label2.Text);
                             Thread.Sleep(150);
                         });
                         
@@ -117,7 +136,7 @@ namespace Kurs_step_1
                         label4.Invoke((ThreadStart)delegate()
                         {
                             label4.Text = (Int32.Parse(label4.Text) + 1).ToString();
-                            listBox1.Items.Add("Количество нажатий на клавиши букв цифр" + label4.Text);
+                            //listBox1.Items.Add("Количество нажатий на клавиши букв цифр" + label4.Text);
                             Thread.Sleep(150);
                         });
                         
@@ -128,7 +147,7 @@ namespace Kurs_step_1
                         label6.Invoke((ThreadStart)delegate()
                         {
                             label6.Text = (Int32.Parse(label6.Text) + 1).ToString();
-                            listBox1.Items.Add("Количество нажатий на мышь" + label6.Text);
+                            //listBox1.Items.Add("Количество нажатий на мышь" + label6.Text);
                             Thread.Sleep(150);
                         });
 
@@ -139,7 +158,7 @@ namespace Kurs_step_1
                         label8.Invoke((ThreadStart)delegate()
                         {
                             label8.Text = (Int32.Parse(label8.Text) + 1).ToString();
-                            listBox1.Items.Add("Количество нажатий на скролл" + label8.Text);
+                            //listBox1.Items.Add("Количество нажатий на скролл" + label8.Text);
                             Thread.Sleep(150);
                         });
                     
