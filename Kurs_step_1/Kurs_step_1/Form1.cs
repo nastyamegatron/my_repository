@@ -19,11 +19,67 @@ namespace Kurs_step_1
     {
         public Form1()
         {
+            _hookID = SetHook(_proc);
             InitializeComponent();
         }
         Thread myThread;
         Thread test;
+        static string browser;
 
+        public static int wheel;
+
+        private static LowLevelMouseProc _proc = HookCallback;
+        private static IntPtr _hookID = IntPtr.Zero;
+        private const int WH_MOUSE_LL = 14;
+
+        private static IntPtr SetHook(LowLevelMouseProc proc)
+        {
+
+            using (Process curProcess = Process.GetCurrentProcess())
+            using (ProcessModule curModule = curProcess.MainModule)
+            {
+                return SetWindowsHookEx(WH_MOUSE_LL, proc,
+                    GetModuleHandle(curModule.ModuleName), 0);
+            }
+        }
+
+        private delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+        private static IntPtr HookCallback (int nCode, IntPtr wParam, IntPtr lParam)
+        {
+            if (nCode >= 0 && MouseMessages.WM_MOUSEWHEEL == (MouseMessages)wParam)
+            {
+                int PID;
+                Process[] processes = Process.GetProcessesByName(browser);
+                IntPtr selectedWindow = GetForegroundWindow();
+                GetWindowThreadProcessId(GetForegroundWindow(), out PID);
+                if (processes.Where(x => x.Id == PID).Count() > 0)
+                {
+                  wheel++;
+                }
+            }
+            return CallNextHookEx(_hookID, nCode, wParam, lParam);
+        }
+
+        private enum MouseMessages
+        {
+            WM_MOUSEWHEEL = 0x020A,
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr SetWindowsHookEx(int idHook,
+            LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode,
+            IntPtr wParam, IntPtr lParam);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr GetModuleHandle(string lpModuleName);
 
         [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
@@ -34,18 +90,28 @@ namespace Kurs_step_1
         [DllImport("user32.dll", SetLastError = true)]
         public static extern Int16 GetKeyState(Keys keys);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern uint GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
+
 
         private void button1_Click(object sender, EventArgs e)
         {
+            if (comboBox1.Text == "Opera") browser = "opera";
+            if (comboBox1.Text == "GoogleChrome") browser = "chrome";
+            if (comboBox1.Text == "MozilaFirefox") browser = "mozila";
+            if (comboBox1.Text == "InternetExplorer") browser = "iexplore";
+            if (comboBox1.Text == "Yandex browser") browser = "browser";
+
             test = new Thread(Test);
             test.Start();
         }
         public void Test()
         {
-            for (int n = 0; n <= 2; n++)
+            for (int n = 1; n <= 50; n++)
             {
                 try { myThread.Abort(); }
                 catch { };
+                wheel = 0;
                 label2.Invoke((ThreadStart)delegate()
                 {
                     label2.Text = 0.ToString();
@@ -62,53 +128,61 @@ namespace Kurs_step_1
                 {
                     label8.Text = 0.ToString();
                 });
-                
+                label10.Invoke((ThreadStart)delegate ()
+                {
+                    label10.Text = n.ToString();
+                });
+
                 myThread = new Thread(Schet);
                 myThread.Start();
-                Thread.Sleep(10000);
-                listBox1.Invoke((ThreadStart)delegate()
+                Thread.Sleep(60000);
+                listBox1.Invoke((ThreadStart)delegate ()
                 {
-                    listBox1.Items.Add("Количество нажатий на клавиши вверх вниз" + label2.Text);
+                    listBox1.Items.Add("Отчет за " + label10.Text + " минуту");
                 });
                 listBox1.Invoke((ThreadStart)delegate()
                 {
-                    listBox1.Items.Add("Количество нажатий на клавиши букв цифр" + label4.Text);
+                    listBox1.Items.Add("Количество нажатий на клавиши вверх вниз: " + label2.Text);
                 });
                 listBox1.Invoke((ThreadStart)delegate()
                 {
-                    listBox1.Items.Add("Количество нажатий на мышь" + label6.Text);
+                    listBox1.Items.Add("Количество нажатий на клавиши букв цифр: " + label4.Text);
                 });
                 listBox1.Invoke((ThreadStart)delegate()
                 {
-                    listBox1.Items.Add("Количество нажатий на скролл" + label8.Text);
+                    listBox1.Items.Add("Количество нажатий на мышь: " + label6.Text);
+                });
+                listBox1.Invoke((ThreadStart)delegate()
+                {
+                    listBox1.Items.Add("Количество нажатий на скролл: " + label8.Text);
                 });
                 listBox1.Invoke((ThreadStart)delegate()
                 {
                     listBox1.Items.Add("");
                 });
-                
             }
+
             myThread.Abort();
             test.Abort();
             
         }
         public void Schet()
         {
-
-            
-
-            IntPtr DialogHandle = FindWindow("Chrome_WidgetWin_1", "Яндекс - Google Chrome");
-            if (DialogHandle == IntPtr.Zero)
+            Process[] processes = Process.GetProcessesByName(browser);
+            if (processes.Count() == 0)
             {
-                MessageBox.Show("Application is not running.");
-                return;
+                MessageBox.Show("Application is not running");
+                myThread.Abort();
             }
             while (true)
             {
+                int PID;
+                processes = Process.GetProcessesByName(browser);
                 IntPtr selectedWindow = GetForegroundWindow();
-                if (selectedWindow == DialogHandle)
+                GetWindowThreadProcessId(GetForegroundWindow(), out PID);
+                if (processes.Where(x => x.Id == PID).Count() > 0 )
                 {
-                  
+
                     if ((GetKeyState(Keys.Down) & 256) == 256 || (GetKeyState(Keys.Up) & 256) == 256)
                     {
                         label2.Invoke((ThreadStart)delegate()
@@ -142,32 +216,29 @@ namespace Kurs_step_1
                         
                         
                     }
-                    if ((GetKeyState(Keys.LButton) & 256) == 256 || (GetKeyState(Keys.RButton) & 256) == 256)
+                    if ((GetKeyState(Keys.LButton) & 256) == 256 || (GetKeyState(Keys.RButton) & 256) == 256 || (GetKeyState(Keys.MButton) & 256) == 256)
                     {
                         label6.Invoke((ThreadStart)delegate()
                         {
                             label6.Text = (Int32.Parse(label6.Text) + 1).ToString();
                             //listBox1.Items.Add("Количество нажатий на мышь" + label6.Text);
-                            Thread.Sleep(150);
+                            Thread.Sleep(200);
                         });
-
-
                     }
-                    if ((GetKeyState(Keys.MButton) & 256) == 256 || (GetKeyState(Keys.PageUp) & 256) == 256 || (GetKeyState(Keys.PageDown) & 256) == 256)
+
+                    label8.Invoke((ThreadStart)delegate ()
                     {
-                        label8.Invoke((ThreadStart)delegate()
-                        {
-                            label8.Text = (Int32.Parse(label8.Text) + 1).ToString();
-                            //listBox1.Items.Add("Количество нажатий на скролл" + label8.Text);
-                            Thread.Sleep(150);
-                        });
-                    
+                        label8.Text = wheel.ToString();
+                        //listBox1.Items.Add("Количество скроллов" + label6.Text);
+                    });
 
-                    }
-
-                   
                 } 
             } 
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            UnhookWindowsHookEx(_hookID);
         }
     }
 }
