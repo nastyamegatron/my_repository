@@ -11,6 +11,8 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Timers;
+using System.IO;
+using System.Collections;
 
 
 namespace Kurs_step_1
@@ -22,9 +24,13 @@ namespace Kurs_step_1
             _hookID = SetHook(_proc);
             InitializeComponent();
         }
+
+        public double[,] education = new double[200, 5];
+        public double[] newObject = new double[5] { 0, 0, 0, 0, 0 };
         Thread myThread;
         Thread test;
         static string browser;
+        public string[] activity = new string[4] { "Просмотр видео", "Чат", "Просмотр новостей", "Чтение статьи" };
 
         public static int wheel;
 
@@ -100,37 +106,33 @@ namespace Kurs_step_1
             if (comboBox1.Text == "GoogleChrome") browser = "chrome";
             if (comboBox1.Text == "MozilaFirefox") browser = "mozila";
             if (comboBox1.Text == "InternetExplorer") browser = "iexplore";
-            if (comboBox1.Text == "Yandex browser") browser = "browser";
-
+            File.Delete(@"Data\Statistics.txt");
+            File.Create(@"Data\Statistics.txt");
             test = new Thread(Test);
             test.Start();
         }
         public void Test()
         {
-            for (int n = 1; n <= 50; n++)
+            for (int n = 0; n <= 50; n++)
             {
                 try { myThread.Abort(); }
                 catch { };
                 wheel = 0;
-                label2.Invoke((ThreadStart)delegate()
+                label2.Invoke((ThreadStart)delegate ()
                 {
                     label2.Text = 0.ToString();
                 });
-                label4.Invoke((ThreadStart)delegate()
+                label4.Invoke((ThreadStart)delegate ()
                 {
                     label4.Text = 0.ToString();
                 });
-                label6.Invoke((ThreadStart)delegate()
+                label6.Invoke((ThreadStart)delegate ()
                 {
                     label6.Text = 0.ToString();
                 });
-                label8.Invoke((ThreadStart)delegate()
+                label8.Invoke((ThreadStart)delegate ()
                 {
                     label8.Text = 0.ToString();
-                });
-                label10.Invoke((ThreadStart)delegate ()
-                {
-                    label10.Text = n.ToString();
                 });
 
                 myThread = new Thread(Schet);
@@ -138,28 +140,43 @@ namespace Kurs_step_1
                 Thread.Sleep(60000);
                 listBox1.Invoke((ThreadStart)delegate ()
                 {
-                    listBox1.Items.Add("Отчет за " + label10.Text + " минуту");
+                    listBox1.Items.Clear();
                 });
-                listBox1.Invoke((ThreadStart)delegate()
+                newObject = new double[5] { 0, 0, 0, 0, 0 };
+                listBox1.Invoke((ThreadStart)delegate ()
                 {
                     listBox1.Items.Add("Количество нажатий на клавиши вверх вниз: " + label2.Text);
+                    newObject[1] = Double.Parse(label2.Text);
                 });
-                listBox1.Invoke((ThreadStart)delegate()
+                listBox1.Invoke((ThreadStart)delegate ()
                 {
                     listBox1.Items.Add("Количество нажатий на клавиши букв цифр: " + label4.Text);
+                    newObject[2] = Double.Parse(label4.Text);
                 });
-                listBox1.Invoke((ThreadStart)delegate()
+                listBox1.Invoke((ThreadStart)delegate ()
                 {
                     listBox1.Items.Add("Количество нажатий на мышь: " + label6.Text);
+                    newObject[3] = Double.Parse(label6.Text);
                 });
-                listBox1.Invoke((ThreadStart)delegate()
+                listBox1.Invoke((ThreadStart)delegate ()
                 {
                     listBox1.Items.Add("Количество нажатий на скролл: " + label8.Text);
+                    newObject[4] = Double.Parse(label8.Text);
                 });
-                listBox1.Invoke((ThreadStart)delegate()
+                var classFinal = Classificator(newObject);
+
+                listBox1.Invoke((ThreadStart)delegate ()
+                {
+                    listBox1.Items.Add(activity[(int)classFinal - 1]);
+                });
+
+                listBox1.Invoke((ThreadStart)delegate ()
                 {
                     listBox1.Items.Add("");
                 });
+                DateTime localDate = DateTime.Now;
+                string str = localDate.ToString() + " " + activity[(int)classFinal - 1] + "\n";
+                File.AppendAllText(@"Data\Statistics.txt", str, Encoding.Default);
             }
 
             myThread.Abort();
@@ -182,7 +199,6 @@ namespace Kurs_step_1
                 GetWindowThreadProcessId(GetForegroundWindow(), out PID);
                 if (processes.Where(x => x.Id == PID).Count() > 0 )
                 {
-
                     if ((GetKeyState(Keys.Down) & 256) == 256 || (GetKeyState(Keys.Up) & 256) == 256)
                     {
                         label2.Invoke((ThreadStart)delegate()
@@ -216,22 +232,21 @@ namespace Kurs_step_1
                         
                         
                     }
-                    if ((GetKeyState(Keys.LButton) & 256) == 256 || (GetKeyState(Keys.RButton) & 256) == 256 || (GetKeyState(Keys.MButton) & 256) == 256)
+                    if ((GetKeyState(Keys.LButton) & 256) == 256 || (GetKeyState(Keys.RButton) & 256) == 256)
                     {
                         label6.Invoke((ThreadStart)delegate()
                         {
                             label6.Text = (Int32.Parse(label6.Text) + 1).ToString();
                             //listBox1.Items.Add("Количество нажатий на мышь" + label6.Text);
-                            Thread.Sleep(200);
+                            Thread.Sleep(150);
                         });
                     }
 
                     label8.Invoke((ThreadStart)delegate ()
                     {
                         label8.Text = wheel.ToString();
-                        //listBox1.Items.Add("Количество скроллов" + label6.Text);
+                        //listBox1.Items.Add("Количество нажатий на мышь" + label6.Text);
                     });
-
                 } 
             } 
         }
@@ -239,6 +254,152 @@ namespace Kurs_step_1
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             UnhookWindowsHookEx(_hookID);
+            test.Abort();
+            myThread.Abort();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            string[] symbol = new string[5] { "A", "B", "C", "D", "E" };
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.ShowDialog();
+            Microsoft.Office.Interop.Excel.Application ObjExcel = new Microsoft.Office.Interop.Excel.Application();                                                                                                                                                      
+            Microsoft.Office.Interop.Excel.Workbook ObjWorkBook = ObjExcel.Workbooks.Open(openFileDialog1.FileName, 0, false, 5, "", "", false, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "", true, false, 0, true, false, false);
+            Microsoft.Office.Interop.Excel.Worksheet ObjWorkSheet;
+            ObjWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)ObjWorkBook.Sheets[1];
+            for (int i = 1; i < 201; i++)
+                {
+                for (int j = 1; j < 6; j++)
+                {
+                    Microsoft.Office.Interop.Excel.Range range = ObjWorkSheet.get_Range(symbol[j-1] + i.ToString(), symbol[j - 1] + i.ToString());
+                    education[i - 1, j - 1] = Double.Parse(range.Text.ToString());
+                }
+                }
+             ObjExcel.Quit();
+        }
+
+        public double Classificator(double[] vector)
+        {
+            double classDeist = 0;
+
+            double middleArrows = Middle(1);
+            double middleKeys = Middle(2);
+            double middleMouse = Middle(3);
+            double middleScroll = Middle(4);
+
+            double otklArrows = SrOtkl(middleArrows, 1);
+            double otklKeys = SrOtkl(middleKeys, 2);
+            double otklMouse = SrOtkl(middleMouse, 3);
+            double otklScroll = SrOtkl(middleScroll, 4);
+
+            for (int i = 0; i < 200; i++)
+            {
+                education[i, 1] = (education[i, 1] - middleArrows) / otklArrows;
+                education[i, 2] = (education[i, 2] - middleKeys) / otklKeys;
+                education[i, 3] = (education[i, 3] - middleMouse) / otklMouse;
+                education[i, 4] = (education[i, 4] - middleScroll) / otklScroll;
+            }
+
+            newObject[1] = (newObject[1] - middleArrows) / otklArrows;
+            newObject[2] = (newObject[2] - middleKeys) / otklKeys;
+            newObject[3] = (newObject[3] - middleMouse) / otklMouse;
+            newObject[4] = (newObject[4] - middleScroll) / otklScroll;
+
+            double[] r = new double[200];
+
+            for (int i = 0; i < 200; i++)
+            {
+                r[i] = Evklid(newObject, education, i);
+            }
+
+            int k = 30;
+            double[] near = new double[k];
+
+            for (int i = 0; i < k; i++)
+            {
+                double min = r.Min();
+                int indexMin = Array.IndexOf(r, min);
+                near[i] = indexMin;
+                DeleteMaxMinFromArray(ref r);
+            }
+
+            int[] classCount = new int[4];
+            double[] finalClass = new double[k];
+
+            for (int i = 0; i < k; i++)
+            {
+                finalClass[i] = education[(int)near[i], 0];
+            }
+
+            for (int i = 0; i < k; i++)
+            {
+                if (finalClass[i] == 1) classCount[0]++;
+                if (finalClass[i] == 2) classCount[1]++;
+                if (finalClass[i] == 3) classCount[2]++;
+                if (finalClass[i] == 4) classCount[3]++;
+            }
+
+            double max = classCount.Max();
+            for (int i = 0; i < 4; i++)
+            {
+                if (classCount[i] == max)
+                {
+                    classDeist = i;
+                    break;
+                }
+            }
+
+            return classDeist + 1;
+        }
+
+        public double Middle(int k)
+        {
+            double mid = 0;
+            double sum = 0;
+            for (int i = 0; i < 200; i++)
+            {
+                sum += education[i, k];
+            }
+            mid = sum / 200;
+            return mid;
+        }
+
+        public double SrOtkl(double sredn, int k)
+        {
+            double otkl = 0;
+            double s = 0;
+            double n = 200;
+            for (int i = 0; i < 200; i++)
+            {
+                s += Math.Pow(education[i,k] - sredn,2);
+            }
+            otkl = (1 / (n - 1) * s);
+            otkl = Math.Sqrt(otkl);
+
+            return s;
+        }
+
+        public double Evklid(double[] p1, double[,] p2, int k)
+        {
+            double r = 0;
+
+            for (int i = 1; i < p1.Length; i++)
+            {
+                double diff = p1[i] - p2[k,i];
+                r += diff * diff;
+            }
+            r = Math.Sqrt(r);
+            return r;
+        }
+
+        private void DeleteMaxMinFromArray(ref double[] array)
+        {
+            List<double> temp = new List<double>();
+            int minindex = Array.IndexOf(array, array.Min());
+            temp = array.ToList();
+            temp.RemoveAt(minindex);
+            array = temp.ToArray();
+
         }
     }
 }
