@@ -30,7 +30,7 @@ namespace Kurs_step_1
         Thread myThread;
         Thread test;
         static string browser;
-        public string[] activity = new string[4] { "Просмотр видео", "Чат", "Просмотр новостей", "Чтение статьи" };
+        public string[] activity = new string[4] { "Просмотр видео", "Чат", "Просмотр новостей", "Онлайн игры" };
 
         public static int wheel;
 
@@ -106,6 +106,7 @@ namespace Kurs_step_1
             if (comboBox1.Text == "GoogleChrome") browser = "chrome";
             if (comboBox1.Text == "MozilaFirefox") browser = "mozila";
             if (comboBox1.Text == "InternetExplorer") browser = "iexplore";
+            if (comboBox1.Text == "Yandex browser") browser = "browser";
             File.Delete(@"Data\Statistics.txt");
             File.Create(@"Data\Statistics.txt");
             test = new Thread(Test);
@@ -113,7 +114,7 @@ namespace Kurs_step_1
         }
         public void Test()
         {
-            for (int n = 0; n <= 50; n++)
+            for (int n = 1; n <= 50; n++)
             {
                 try { myThread.Abort(); }
                 catch { };
@@ -134,15 +135,20 @@ namespace Kurs_step_1
                 {
                     label8.Text = 0.ToString();
                 });
+                label10.Invoke((ThreadStart)delegate ()
+                {
+                    label10.Text = n.ToString();
+                });
 
                 myThread = new Thread(Schet);
                 myThread.Start();
                 Thread.Sleep(60000);
+
+                newObject = new double[5] { 0, 0, 0, 0, 0 };
                 listBox1.Invoke((ThreadStart)delegate ()
                 {
-                    listBox1.Items.Clear();
+                    listBox1.Items.Add("Отчет за " + label10.Text + " минуту");
                 });
-                newObject = new double[5] { 0, 0, 0, 0, 0 };
                 listBox1.Invoke((ThreadStart)delegate ()
                 {
                     listBox1.Items.Add("Количество нажатий на клавиши вверх вниз: " + label2.Text);
@@ -312,7 +318,7 @@ namespace Kurs_step_1
                 r[i] = Evklid(newObject, education, i);
             }
 
-            int k = 30;
+            int k = 50;
             double[] near = new double[k];
 
             for (int i = 0; i < k; i++)

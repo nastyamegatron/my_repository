@@ -25,3 +25,12 @@ C:\Users\Stas\Downloads\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.Form1.reso
 C:\Users\Stas\Downloads\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.Properties.Resources.resources
 C:\Users\Stas\Downloads\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.csproj.GenerateResource.Cache
 C:\Users\Stas\Desktop\boroda\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.csprojResolveAssemblyReference.cache
+D:\lab\Kurs_step_1\Kurs_step_1\bin\Debug\Kurs_step_1.exe.config
+D:\lab\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.exe
+D:\lab\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.pdb
+D:\lab\Kurs_step_1\Kurs_step_1\bin\Debug\Kurs_step_1.exe
+D:\lab\Kurs_step_1\Kurs_step_1\bin\Debug\Kurs_step_1.pdb
+D:\lab\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.csprojResolveAssemblyReference.cache
+D:\lab\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.Form1.resources
+D:\lab\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.Properties.Resources.resources
+D:\lab\Kurs_step_1\Kurs_step_1\obj\Debug\Kurs_step_1.csproj.GenerateResource.Cache
